@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureChat</title>
+</head>
+<body>
+    <h2>SecureChat</h2>
+    <button onclick="logout()">Logout</button>
+    <div id="chat"></div>
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script>
+        function logout() {
+            fetch("/logout", { method: "GET" })  // Call logout route
+                .then(() => {
+                    window.location.href = "/";  // Redirect to login page
+                })
+                .catch(error => console.error("Logout failed:", error));
+        }
+    </script>
+</body>
+</html>
