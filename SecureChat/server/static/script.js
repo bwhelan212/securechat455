@@ -1,4 +1,4 @@
-const socket = io("http://localhost:5000", {
+const socket = io("wss://localhost:5000", {
     reconnection: true, 
     reconnectionAttempts: 5, 
     reconnectionDelay: 2000 
