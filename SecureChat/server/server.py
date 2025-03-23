@@ -1,111 +1,124 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from flask_socketio import SocketIO, send, emit, disconnect
-from flask_session import Session
-import json
+from chat_logger import log_message
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 import os
-import time
+import json
+import bcrypt
+from datetime import datetime, timedelta
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
-app.debug = True
-app.secret_key = "supersecretkey"
-app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_FILE_DIR"] = os.path.abspath("flask_session")
-Session(app)
-
+app = Flask(__name__)
+CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-USER_DB = "users.json"
+USER_FILE = "users.json"
+if not os.path.exists(USER_FILE):
+    with open(USER_FILE, "w") as f:
+        json.dump({}, f)
 
-# Ensure users.json exists
+connected_users = {}  # sid: username
+
+# === Brute-force tracking ===
+login_attempts = {}
+MAX_ATTEMPTS = 5
+BLOCK_DURATION = timedelta(minutes=5)
+
+# === User handling ===
 def load_users():
-    if not os.path.exists(USER_DB):
-        save_users({
-            "admin": "password123", 
-            "team_member": "securechat456"
-        })
-        return {"admin": "password123", "team_member": "securechat456"}
+    with open(USER_FILE, "r") as f:
+        return json.load(f)
 
-    try:
-        with open(USER_DB, "r") as f:
-            data = f.read()
-            return json.loads(data) if data.strip() else {}
-    except (FileNotFoundError, json.JSONDecodeError):
-        print("Error: users.json is missing or corrupted. Resetting to default.")
-        save_users({"admin": "password123", "team_member": "securechat456"})
-        return {"admin": "password123", "team_member": "securechat456"}
+def save_users(data):
+    with open(USER_FILE, "w") as f:
+        json.dump(data, f, indent=2)
 
-def save_users(users):
-    with open(USER_DB, "w") as f:
-        json.dump(users, f)
+# === Routes ===
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    username = data["username"]
+    password = data["password"]
+
+    users = load_users()
+    if username in users:
+        return "Username already exists", 400
+
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    users[username] = {"password": hashed}
+    save_users(users)
+    return "User registered", 200
 
 @app.route("/login", methods=["POST"])
 def login():
-    try:
-        data = request.json
-        username = data.get("username")
-        password = data.get("password")
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
 
-        users = load_users()
+    now = datetime.now()
+    attempts = login_attempts.get(username, {"count": 0, "last_attempt": now, "blocked_until": None})
 
-        if username in users and users[username] == password:
-            session["user"] = username
-            print(f"User {username} logged in successfully")
-            return jsonify({"success": True, "message": "Login successful!"})
+    if attempts["blocked_until"] and now < attempts["blocked_until"]:
+        return "Too many login attempts. Please try again later.", 403
 
-        print("Invalid login attempt")
-        return jsonify({"success": False, "message": "Invalid credentials!"})
+    users = load_users()
+    if username not in users:
+        return "User not found", 400
 
-    except Exception as e:
-        print("Error in login:", e)
-        return jsonify({"success": False, "message": "Internal Server Error"}), 500
+    hashed = users[username]["password"].encode()
+    if bcrypt.checkpw(password.encode(), hashed):
+        login_attempts[username] = {"count": 0, "last_attempt": now, "blocked_until": None}
+        return "Login successful", 200
+    else:
+        attempts["count"] += 1
+        attempts["last_attempt"] = now
+        if attempts["count"] >= MAX_ATTEMPTS:
+            attempts["blocked_until"] = now + BLOCK_DURATION
+        login_attempts[username] = attempts
+        return "Incorrect password", 401
 
-@app.route("/logout")
-def logout():
-    session.pop("user", None)
-    return redirect(url_for("auth_page"))
+@app.route("/users", methods=["GET"])
+def get_users():
+    exclude = request.args.get("exclude")
+    users = load_users()
+    return jsonify([u for u in users if u != exclude])
 
-@app.route("/")
-def auth_page():
-    return render_template("auth.html")
-
-@app.route("/chat")
-def chat_page():
-    if "user" not in session:
-        print("User not authenticated. Redirecting to login.")
-        return redirect(url_for("auth_page"))
-    return render_template("index.html")
-
-user_last_message_time = {}
-MESSAGE_RATE_LIMIT = 1.5  # Users must wait 1.5 seconds between messages
-
+# === SocketIO Events ===
 @socketio.on("connect")
 def handle_connect():
-    user = session.get("user", "Guest")
-    print(f"User {user} has connected.")
-    emit("user_connected", {"message": f"{user} has joined the chat."}, broadcast=True)
+    print("Client connected.")
+
+@socketio.on("join")
+def handle_join(data):
+    username = data
+    connected_users[request.sid] = username
+    print(f"[JOIN] {username}")
+    send_user_list()
 
 @socketio.on("disconnect")
 def handle_disconnect():
-    user = session.get("user", "Guest")
-    print(f"User {user} has disconnected.")
-    emit("user_disconnected", {"message": f"{user} has left the chat."}, broadcast=True)
+    sid = request.sid
+    if sid in connected_users:
+        left_user = connected_users[sid]
+        print(f"[DISCONNECT] {left_user}")
+        del connected_users[sid]
+        send_user_list()
 
 @socketio.on("message")
-def handle_message(msg):
-    user = session.get("user", "guest")
-    current_time = time.time()
+def handle_message(data):
+    sender = data.get("sender")
+    recipient = data.get("recipient")
+    message = data.get("message")
 
-    if user in user_last_message_time:
-        time_since_last_message = current_time - user_last_message_time[user]
-        if time_since_last_message < MESSAGE_RATE_LIMIT:
-            print(f"{user} is sending messages too fast. Ignoring message.")
-            return
+    log_message(sender, recipient, message)
+    emit("message", data, broadcast=True)
 
-    user_last_message_time[user] = current_time
+@socketio.on("file")
+def handle_file(data):
+    emit("file", data, broadcast=True)
 
-    print(f"User {user} sent a message")
-    send(f"{user}: {msg}", broadcast=True)
+def send_user_list():
+    usernames = list(set(connected_users.values()))
+    socketio.emit("user_list", usernames)
 
-# Start Server
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
