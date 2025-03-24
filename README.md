@@ -1,47 +1,50 @@
-Requirements:
-- node
-- npm
-- python 
-- flasksocket-io
-- socket.io
+# Secure Chat
 
-Create a python environment
-python3 -m venv .venv
-source .venv/bin/activate
-pip install Flask Flask-SocketIO Flask-Session
+## Connect as client
+Simply download and launch gui.exe on a windows machine from the respective folder
 
-Generate self-signed certs in /SecureChat/server folder
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+## Set Up
 
-To run the program:
-go to location of /SecureChat/server and run:
-python3 server.py
+### server.py 
+1. **Create a Python Environment:**
+   ```bash
+   python3 -m venv venv
+2. **Actiate then install the following dependencies with:**
+    ```bash
+    pip install customtkinter python-socketio pycryptodome requests flask-socketio
 
-Naivgate to one of the following:
-https://localhost:5001
-https://127.0.0.1:5001
-https://<your_ip>:5001
+## Key Features
+1. User Friendly interface
+2. File sharing capabilities
+3. Emoji and Rich Media Support
+4. Security Hardening
+5. User Authentication
+6. Real Time Messaging 
+7. Secure Connection
+8. Rate limiting
+9. Connection Handling
 
-admin credentials:
-admin/password123
+## File breakdown
+### server.py
+This is the main server-side script.It handles HTTP requests, manages user sessions, interactions with user data, and sets up WebSocket connections using Flask-SocketIO. 
 
-### `server.py`
-main server-side script. handles HTTP requests, manages user sessions, and sets up WebSocket connections using Flask-SocketIO.
-- **User Authentication**: Handles login and logout requests, verifies user credentials, and manages user sessions.
-- **WebSocket Events**: Manages WebSocket connections and events, such as user connections, disconnections, and message handling.
-- **Session Management**: Uses Flask-Session to store session data on the filesystem, ensuring that session data is available across different requests and WebSocket connections.
+For authentication it verifies login and handles registration on backend, verifies user credentials, and manages user sessions. Prevents bruteforce login attempts, broadcasts of message.
+It also Manages WebSocket connections and events, such as user connections, disconnections, and message handling.
 
-### `auth.js`
-client-side script handles the login form submission
-- **Form Submission**: Prevents the default form submission behavior and sends an asynchronous request to the server.
-- **User Feedback**: Displays messages to the user based on the server's response (e.g., login successful or invalid credentials).
-- **Redirection**: Redirects the user to the chat page upon successful login.
+### gui.py
+python file used to create executable
+encrypts and decrypts messages using AES and session keys
+generates RSA key pair for users upon registration
+handles user interface with tkinter and customtkinter
+handles frontend for login, registration, messaging, file sharing
 
-### script.js
-client-side script that manages the WebSocket connection and handles real-time events in the chat application.
-- **WebSocket Connection**: Establishes a WebSocket connection to the server and handles reconnection attempts.
-- **Event Handling**: Listens for various WebSocket events, such as user connections, disconnections, and incoming messages, and updates the chat interface accordingly.
-- **Message Sending**: Provides a function to send messages to the server, ensuring that messages are sent at a controlled rate to prevent spamming.
+### gui.exe
+Client side executable
 
-### users.json
-stores user credentials in JSON format. It is used by the server to verify user credentials during the login process. The file contains key-value pairs where the key is the username and the value is the password.
+### Logs directory (server/logs)
+Directory for chat message history
+
+### users.json (server/users.json)
+Information about registered users for logging in and encryption and stored here. The server has access to this and only knows the public key of the users. Only the clients have access to their private keys. 
+
+
