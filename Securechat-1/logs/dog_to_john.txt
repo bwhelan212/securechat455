@@ -1,0 +1,31 @@
+[2025-03-22 16:52:41] john -> dog: hello
+[2025-03-22 16:54:02] john -> dog: hey
+[2025-03-22 16:54:14] john -> dog: whats up 
+[2025-03-22 16:58:37] john -> dog: hi
+[2025-03-22 16:59:04] dog -> john: hi
+[2025-03-22 16:59:12] john -> dog: what is up!
+[2025-03-22 16:59:31] dog -> john: just chillin
+[2025-03-22 18:55:26] dog -> john: hey
+[2025-03-22 19:02:57] john -> dog: hi
+[2025-03-22 19:03:43] dog -> john: hello
+[2025-03-22 19:04:41] dog -> john: hi
+[2025-03-22 19:04:50] john -> dog: hi
+[2025-03-22 19:05:02] dog -> john: what is up
+[2025-03-22 19:10:55] dog -> john: hi
+[2025-03-22 19:16:48] john -> dog: cQR5fwUQMss2zn7UMRKugQdwyNFhThqgnmFm0bZSlF5FqA==
+[2025-03-22 19:16:57] dog -> john: h9d/bOTkX2NR+y13na8nlyCh5+zruZULFHcZkueDX2pNMw==
+[2025-03-22 19:17:08] john -> dog: /QRQe8CmmkiSB/yjnXPYc2PhlnX4xCSfgDCfUt656bHAYIkX1NfM5YhZrdiI
+[2025-03-22 19:17:26] dog -> john: lCtdtEN3jx9dJAYk0rN/MJAG494hh/loJfo0BePXcpr6l/o=
+[2025-03-22 19:36:32] john -> dog: sQNnOtvasI/LrxPWjMRKuGVW/nYLm2Ravw5YwXeN/cz3Dik=
+[2025-03-22 19:38:22] dog -> john: OjFNgOZjmsVIeWpVfGtl3Ph96jRa+wtvUW2Vr5U4BynfMQ==
+[2025-03-22 19:38:33] john -> dog: fmx33vV4EMn1NR4acuUgoqtTTv7mzmMJNQ3gw5ylJIWHYw==
+[2025-03-22 19:39:16] john -> dog: PPs0WcMk6XPRzvN6wUIKwEZ035Dz7rf3rGDoq3VmXfFgVA==
+[2025-03-22 19:40:15] john -> dog: RoANw3usAq6fCVJifPYnd01aD95V+uk0VSfX/u1GadWOOA==
+[2025-03-22 19:40:31] john -> dog: Q+tOYztQxEVpMjY5PyAOxKsgI0MtpFVfB4T3FwTkH6/STSMAKQ==
+[2025-03-22 19:42:59] john -> dog: XKOaZwv15PKqIzT5zQ4yvnaspM3Infg5uv86US8tr27glQ==
+[2025-03-22 19:43:26] john -> dog: E+7hL71nZDZ78Hugit1I8s/QVkE7V3w6DSMimBsE3tOm9w==
+[2025-03-22 19:51:22] dog -> john: fjW2RycmsWB+8UoRFgnyQFM+KpJHhJGh4mL6LbW77NLxgA==
+[2025-03-22 19:52:36] dog -> john: tibJSDpxnof7n0rMQK4V8HYMHOMFb+R39FI0nFBY2dEcZxU=
+[2025-03-22 19:57:14] dog -> john: RSfSSfc01LyqcDEof89CTdiKPqbxgAKrH7rezAvWrpnn7w==
+[2025-03-22 20:06:19] dog -> john: N1wYXFSWb/ZdukuFFgiuxBCrLuwImX5evR3oLeLByXRI8TbRjw==
+[2025-03-22 20:06:24] john -> dog: qVDpqcKdRpdcwzwuPb8ONn4B/lAUAVz3vdDbQuL+TrdfZKAsLBqh6A==

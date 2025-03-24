@@ -1,0 +1,8 @@
+[2025-03-23 14:57:44] john -> dog: VBK4aJlvs+GKbazIhZWSl5BXHe1auboyyVlKsb5NU99FECw=
+[2025-03-23 14:57:52] dog -> john: tRJYqI1SpUEUtGDh2HiWB8AeskvTlzrE0e5XVVwbRIUsdqUY3nVagTlr
+[2025-03-23 15:04:47] dog -> john: 3iBHQGOtUx+A6hTCXLHzGTWxMl22vm2WPTlZWkjloBrniHSASQ==
+[2025-03-23 15:04:56] john -> dog: wV88b2ZSxpX4uXLxdqunxeyj2eIStFsbfE2y/tK7Kj0SneDk
+[2025-03-23 15:48:26] dog -> john: +sQcbvavdEd1pr/K/CbfU9vrIR3UBRNY9ysX/38nvGlskQ==
+[2025-03-23 15:48:57] dog -> john: uiaVDNvZ12jgpOrcEbw0SeCsmFii9t06QbkQlwmyvnashA==
+[2025-03-23 16:10:07] dog -> john: AWrp4bSlqYHTevC56OY3Kkdwm/eTSE4w+cWLlm3yqvbKyhk=
+[2025-03-23 16:10:24] john -> dog: kDQeLrzjO88ymS0jx+wCmpwvFLikI9Ral7e3dHvIyeDKAw==
